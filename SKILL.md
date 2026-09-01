@@ -129,7 +129,8 @@ When building Phase 3 or Phase 4 mockups:
 2. Open the file locally in the user's browser so they can see it immediately.
 3. Provide the local file path as the primary delivery, plus a same-network (LAN) URL as
    secondary if a local HTTP server is available.
-4. Every board must have a **text copy/export button** that dumps a readable summary.
+4. Every board must have a **"Copy result" button** in the top bar that copies a readable
+   summary straight to the clipboard — no modal. Use the `legacyCopy` fallback pattern.
 5. If delivering over chat platforms that block raw HTML, zip it or host it.
 
 ## Anti-Patterns (NEVER DO)
