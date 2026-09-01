@@ -54,7 +54,8 @@ for the project but never fall back to busy, dense, or decorative styling.
 - **Design palettes and fonts for the SPECIFIC project** — never reuse the template's default
   fuchsia/silver colors or demo copy. Derive fresh options from the project context.
 - **Theme switcher (MANDATORY on every board):** include the top-5 theme switcher from
-  `templates/themes.js` — Apple, Noir, Glass, Brutalist, Editorial. Boards must be CSS-var
+  `templates/themes.js` — Apple, Noir, Neon, Brutalist, Editorial. It lives in a fixed
+  **corner dropdown** (🎨 button, bottom-right), not a banner row. Boards must be CSS-var
   driven (`--bg, --surf, --text, --text2, --accent, --accent-ink, --rule, --muted, --h-font,
   --b-font, --radius, --borderw, --h-ls`) so any theme re-skins the whole page instantly.
   Theme choice persists in localStorage. Apple is the default.

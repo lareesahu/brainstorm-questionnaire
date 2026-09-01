@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════════════════════════
-// THEMES — top-5 popular design styles, ready to drop into any board.
+// THEMES — top-5 popular design styles + corner dropdown switcher.
 // Usage:
-//   1. Copy this file's THEMES object + applyTheme() + renderThemes()
-//      into your board's <script> (or include as a separate JS file).
-//   2. Add a container in your controls bar: <div class="theme-row" id="themeRow"></div>
-//   3. Style .theme-row / .theme-chip (see the CSS block at the bottom).
+//   1. Copy this file's THEMES object + applyTheme() + toggleDD() +
+//      renderThemes() into your board's <script>.
+//   2. Add the fixed corner button + menu container (below).
+//   3. Style .theme-dd / .theme-dd-btn / .theme-dd-menu / .theme-item
+//      (see the CSS block at the bottom).
 //   4. Call renderThemes() on load.
 //
 // The board must be var-driven: --bg, --surf, --text, --text2, --accent,
@@ -27,13 +28,13 @@ var THEMES = {
     bf:"system-ui,-apple-system,'SF Pro Text','Segoe UI',sans-serif",
     radius:'14px', borderw:'1px', hls:'-0.01em'
   },
-  glass: {
-    label:'Glass', bg:'linear-gradient(135deg,#667EEA 0%,#764BA2 100%)', surf:'rgba(255,255,255,0.16)',
-    text:'#FFFFFF', text2:'rgba(255,255,255,0.7)', accent:'#FFFFFF', accentInk:'#3A2A66',
-    rule:'rgba(255,255,255,0.28)', muted:'rgba(255,255,255,0.6)',
+  neon: {
+    label:'Neon', bg:'radial-gradient(1100px 700px at 85% -10%, rgba(0,229,255,0.14), transparent 60%), #0B0E14',
+    surf:'#121826', text:'#EAF6FF', text2:'#8FA3C0',
+    accent:'#00E5FF', accentInk:'#001018', rule:'#1E2A3F', muted:'#5C6F8C',
     hf:"system-ui,-apple-system,'SF Pro Display','Segoe UI',sans-serif",
     bf:"system-ui,-apple-system,'SF Pro Text','Segoe UI',sans-serif",
-    radius:'20px', borderw:'1px', hls:'-0.02em'
+    radius:'10px', borderw:'1px', hls:'-0.01em'
   },
   brutal: {
     label:'Brutalist', bg:'#FFFFFF', surf:'#F5F1E8', text:'#111111', text2:'#555555',
@@ -62,27 +63,49 @@ function applyTheme(id){
   r.setProperty('--radius', t.radius); r.setProperty('--borderw', t.borderw);
   r.setProperty('--h-ls', t.hls);
   try{ localStorage.setItem('board-theme', id); }catch(e){}
-  document.querySelectorAll('.theme-chip').forEach(function(c){
-    c.classList.toggle('on', c.dataset.theme === id);
+  var lbl = document.getElementById('themeDDLabel');
+  if(lbl) lbl.textContent = t.label;
+  document.querySelectorAll('.theme-item').forEach(function(it){
+    it.classList.toggle('on', it.dataset.theme === id);
   });
+  var dd = document.getElementById('themeDD');
+  if(dd) dd.classList.remove('open');
 }
+function toggleDD(e){
+  if(e) e.stopPropagation();
+  document.getElementById('themeDD').classList.toggle('open');
+}
+document.addEventListener('click', function(){
+  document.getElementById('themeDD').classList.remove('open');
+});
 function renderThemes(){
-  var row = document.getElementById('themeRow');
-  if(!row) return;
-  var html = '<span class="lbl">Theme</span>';
+  var menu = document.getElementById('themeDDMenu');
+  if(!menu) return;
+  var html = '';
   Object.keys(THEMES).forEach(function(id){
-    html += '<button class="theme-chip" data-theme="' + id + '" onclick="applyTheme(\'' + id + '\')">' + THEMES[id].label + '</button>';
+    html += '<button class="theme-item" data-theme="' + id + '" onclick="applyTheme(\'' + id + '\')"><span class="theme-dot" style="background:' + THEMES[id].accent + '"></span>' + THEMES[id].label + '</button>';
   });
-  row.innerHTML = html;
+  menu.innerHTML = html;
   var saved = 'apple';
   try{ saved = localStorage.getItem('board-theme') || 'apple'; }catch(e){}
   applyTheme(saved);
 }
 
-/* Minimal CSS for the theme row — add to your board's <style>:
-.theme-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 0 2px}
-.theme-row .lbl{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-right:4px}
-.theme-chip{padding:6px 14px;border-radius:980px;border:var(--borderw) solid var(--rule);background:var(--bg);font-size:0.72rem;cursor:pointer;font-family:inherit;color:var(--text);transition:all 0.15s}
-.theme-chip:hover{border-color:var(--accent)}
-.theme-chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+/* HTML — fixed corner button + menu (place just before </body>):
+<div class="theme-dd" id="themeDD">
+  <button class="theme-dd-btn" onclick="toggleDD(event)">🎨 <span id="themeDDLabel">Apple</span> ▾</button>
+  <div class="theme-dd-menu" id="themeDDMenu"></div>
+</div>
+*/
+
+/* Minimal CSS — add to your board's <style>:
+.theme-dd{position:fixed;bottom:16px;right:16px;z-index:300}
+.theme-dd-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:980px;border:var(--borderw) solid var(--rule);background:var(--surf);color:var(--text);font-size:0.75rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.14);transition:all 0.15s}
+.theme-dd-btn:hover{border-color:var(--accent)}
+.theme-dd-menu{position:absolute;bottom:calc(100% + 8px);right:0;min-width:172px;background:var(--surf);border:var(--borderw) solid var(--rule);border-radius:var(--radius);padding:6px;box-shadow:0 8px 24px rgba(0,0,0,0.18);display:none}
+.theme-dd.open .theme-dd-menu{display:block}
+.theme-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;background:transparent;color:var(--text);font-size:0.78rem;font-family:inherit;cursor:pointer;border-radius:8px;text-align:left}
+.theme-item:hover{background:var(--bg)}
+.theme-item.on{color:var(--accent);font-weight:700}
+.theme-dot{width:12px;height:12px;border-radius:50%;border:1px solid var(--rule);flex-shrink:0}
 */
