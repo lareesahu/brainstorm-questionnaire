@@ -6,12 +6,12 @@
 <title>Design Lab — [Brand Name]</title>
 <style>
 :root{
-  --bg:#F4F2F8;--surf:#EDE8F2;--text:#1A1620;--text2:#5A5468;
-  --accent:#8B1A4A;--rule:#D8D4E4;--muted:#9892A8;
-  --h-font:Georgia,'Times New Roman',serif;
-  --b-font:system-ui,-apple-system,'Segoe UI',sans-serif;
-  --h-weight:400;--b-weight:400;--ls:0em;
-  --card-style:'flat';--card-radius:2px;
+  --bg:#FFFFFF;--surf:#F5F5F7;--text:#1D1D1F;--text2:#6E6E73;
+  --accent:#0071E3;--rule:#D2D2D7;--muted:#86868B;
+  --h-font:system-ui,-apple-system,'SF Pro Display','Segoe UI',sans-serif;
+  --b-font:system-ui,-apple-system,'SF Pro Text','Segoe UI',sans-serif;
+  --h-weight:600;--b-weight:400;--ls:0em;
+  --card-style:'flat';--card-radius:12px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:15px}
@@ -129,7 +129,7 @@ body{
   display:inline-block;margin-top:24px;padding:12px 28px;
   background:var(--accent);color:#fff;border:none;cursor:pointer;
   font-family:var(--b-font);font-weight:600;font-size:0.82rem;
-  border-radius:2px;transition:background 0.35s;
+  border-radius:980px;transition:background 0.35s;
 }
 
 /* Section divider */
@@ -226,33 +226,33 @@ body{
 // ══════════════════════════════════════
 const P = {
   modeA: {
-    name:'Mode A',badge:'MODE A · [direction descriptor]',
+    name:'Mode A',badge:'MODE A · Light · Apple Blue',
     tagline:'[Tagline for Mode A direction.]',
     story:'[Story for Mode A direction. One paragraph.]',
     about:'[About/section copy for Mode A direction.]',
     cta:'[CTA for Mode A →]',
-    colors:{bg:'#F4F2F8',surf:'#EDE8F2',text:'#1A1620',text2:'#5A5468',accent:'#8B1A4A',rule:'#D8D4E4',muted:'#9892A8'}
+    colors:{bg:'#FFFFFF',surf:'#F5F5F7',text:'#1D1D1F',text2:'#6E6E73',accent:'#0071E3',rule:'#D2D2D7',muted:'#86868B'}
   },
   modeB: {
-    name:'Mode B',badge:'MODE B · [direction descriptor]',
+    name:'Mode B',badge:'MODE B · Dark · Apple Blue',
     tagline:'[Tagline for Mode B direction.]',
     story:'[Story for Mode B direction. One paragraph.]',
     about:'[About/section copy for Mode B direction.]',
     cta:'[CTA for Mode B →]',
-    colors:{bg:'#0D0A10',surf:'#1A1520',text:'#E8E0F0',text2:'#A098B0',accent:'#C02860',rule:'#2A2430',muted:'#6A6078'}
+    colors:{bg:'#000000',surf:'#1D1D1F',text:'#F5F5F7',text2:'#A1A1A6',accent:'#2997FF',rule:'#424245',muted:'#6E6E73'}
   }
 };
 
 // Font catalog — system fonts only, no webfonts, no CDN
 const FONTS = {
   heading: [
+    {name:'System Sans', css:"system-ui,-apple-system,'SF Pro Display','Segoe UI',sans-serif", preview:'Sans'},
+    {name:'Segoe UI', css:"'Segoe UI',system-ui,-apple-system,sans-serif", preview:'Segoe'},
+    {name:'Helvetica', css:"'Helvetica Neue','Arial Nova',Helvetica,system-ui,sans-serif", preview:'Helvetica'},
     {name:'Georgia', css:"Georgia,'Times New Roman',serif", preview:'Georgia'},
     {name:'Palatino', css:"'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif", preview:'Palatino'},
     {name:'Garamond', css:"Garamond,'Adobe Garamond',Georgia,serif", preview:'Garamond'},
     {name:'Didone', css:"'Bodoni MT','Modern No.20',Didot,Georgia,serif", preview:'Didone'},
-    {name:'System Sans', css:"system-ui,-apple-system,'Segoe UI',sans-serif", preview:'Sans'},
-    {name:'Helvetica', css:"'Helvetica Neue','Arial Nova',Helvetica,system-ui,sans-serif", preview:'Helvetica'},
-    {name:'Segoe UI', css:"'Segoe UI',system-ui,-apple-system,sans-serif", preview:'Segoe'},
   ],
   body: [
     {name:'System Sans', css:"system-ui,-apple-system,'Segoe UI',sans-serif", preview:'Sys Sans'},
@@ -266,7 +266,7 @@ const FONTS = {
 const CARD_STYLES = ['flat','shadow','leftline','glass','minimal','outline'];
 
 // Default per-mode settings
-function defaultMode(){ return {overrides:{},hFont:0,bFont:0,hWeight:400,bWeight:400,ls:0,cardStyle:'flat'}; }
+function defaultMode(){ return {overrides:{},hFont:0,bFont:0,hWeight:600,bWeight:400,ls:0,cardStyle:'flat'}; }
 
 // State — everything is per-mode
 let state = {
@@ -343,13 +343,13 @@ function renderAll(){
 function getAlts(role){
   const m = state.mode;
   const map = {
-    bg:{modeA:['#FCFAF8','#F0EEF4','#E8E6F0'],modeB:['#08060C','#120E18','#0F0B14']},
-    surf:{modeA:['#F0ECF4','#E6E2EE','#F4F0F8'],modeB:['#1E1828','#161020','#1C1624']},
-    text:{modeA:['#0D0A14','#221E2A','#14101C'],modeB:['#F0E8F8','#E0D8EC','#F4ECFC']},
-    text2:{modeA:['#4A4458','#6A6478','#565068'],modeB:['#B0A8C0','#9890A8','#B8B0C8']},
-    accent:{modeA:['#7A1840','#A02850','#6E1438','#9C2058','#B82A60'],modeB:['#D03070','#B02058','#E04080','#C82868','#E85088']},
-    rule:{modeA:['#D0CCDE','#C8C4D8','#DCD8E8'],modeB:['#2E2838','#322C3C','#282230']},
-    muted:{modeA:['#A098B0','#8A8298','#A8A0B8'],modeB:['#7A7088','#6A6078','#7A7288']},
+    bg:{modeA:['#FAFAFA','#F2F2F4','#ECECEF'],modeB:['#050505','#0A0A0C','#111114']},
+    surf:{modeA:['#F0F0F2','#EAEAEE','#F7F7F9'],modeB:['#26262A','#1F1F23','#2C2C30']},
+    text:{modeA:['#111114','#2A2A2E','#3A3A3F'],modeB:['#FFFFFF','#E8E8ED','#D8D8DD']},
+    text2:{modeA:['#5E5E63','#7A7A80','#66666B'],modeB:['#B0B0B8','#9A9AA2','#BABAC2']},
+    accent:{modeA:['#0062CC','#007AFF','#005BB8','#0A84FF','#0052A8'],modeB:['#0A84FF','#64D2FF','#1E90FF','#409CFF','#84C5FF']},
+    rule:{modeA:['#C9C9CF','#DEDEE2','#C2C2C9'],modeB:['#3A3A3E','#48484C','#343438']},
+    muted:{modeA:['#94949C','#7E7E86','#A0A0A8'],modeB:['#8A8A92','#7A7A82','#9898A0']},
   };
   return map[role]?.[m] || [];
 }

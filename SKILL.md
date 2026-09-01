@@ -32,7 +32,11 @@ for Phase 2 brand identity boards. It is a live interactive design laboratory �
 selection cards.
 
 Template structure (apply fresh colors/fonts/content each time, never reuse the template's
-actual placeholder values):
+actual placeholder values). **Locked default design language: Apple-style** — system fonts
+(SF Pro / system-ui first), near-white light mode and near-black dark mode, hairline borders
+(#D2D2D7 / #424245), 12px card radii, pill CTA buttons, generous whitespace, Apple blue accent
+(#0071E3 light / #2997FF dark). Keep this minimal, airy DNA for every board; swap colors/copy
+for the project but never fall back to busy, dense, or decorative styling.
 - **Sticky top control bar** with all adjustments
 - **Live preview area** below showing hero + cards + about section with real project copy
 - **Mode toggle** if dual-mode (Light/Dark, Mind/Soul, A/B) — two full palettes with separate copy
