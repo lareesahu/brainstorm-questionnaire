@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Lab — [Brand Name]</title>
+<style>
+:root{
+  --bg:#F4F2F8;--surf:#EDE8F2;--text:#1A1620;--text2:#5A5468;
+  --accent:#8B1A4A;--rule:#D8D4E4;--muted:#9892A8;
+  --h-font:Georgia,'Times New Roman',serif;
+  --b-font:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --h-weight:400;--b-weight:400;--ls:0em;
+  --card-style:'flat';--card-radius:2px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--b-font);
+  font-weight:var(--b-weight);line-height:1.6;min-height:100vh;
+  transition:background 0.35s,color 0.35s;
+}
+
+/* Silk */
+.silk{position:fixed;inset:0;pointer-events:none;z-index:0}
+.silk::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 15% 0%, rgba(139,26,74,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 60%, rgba(180,190,210,0.06) 0%, transparent 45%);
+  transition:background 0.35s}
+
+/* ═══════ CONTROLS ═══════ */
+.controls{
+  position:sticky;top:0;z-index:100;background:var(--surf);
+  border-bottom:1px solid var(--rule);padding:10px 16px;
+  transition:all 0.35s;backdrop-filter:blur(12px);
+}
+.ctrl-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-label{
+  font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--muted);white-space:nowrap;min-width:36px;
+}
+
+/* Mode toggle */
+.mode-tog{display:flex;background:var(--rule);border-radius:100px;padding:2px}
+.mode-tog button{
+  padding:5px 16px;border-radius:100px;border:none;cursor:pointer;
+  font-size:0.68rem;font-weight:600;background:transparent;color:var(--text2);
+  font-family:var(--b-font);transition:all 0.2s;
+}
+.mode-tog button.on{background:var(--accent);color:#fff}
+
+/* Chips */
+.chip{
+  width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;
+  transition:all 0.12s;flex-shrink:0;
+}
+.chip:hover{transform:scale(1.2)}
+.chip.on{border-color:var(--text);box-shadow:0 0 0 1px var(--surf),0 0 0 3px var(--accent)}
+
+/* Font options */
+.fopt{
+  font-size:0.62rem;padding:4px 10px;border-radius:100px;cursor:pointer;
+  border:1px solid var(--rule);color:var(--text2);white-space:nowrap;
+  background:transparent;font-family:inherit;transition:all 0.15s;
+}
+.fopt:hover{border-color:var(--accent);color:var(--text)}
+.fopt.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Weight slider */
+.wt-slider{
+  -webkit-appearance:none;width:80px;height:4px;background:var(--rule);
+  border-radius:2px;outline:none;cursor:pointer;
+}
+.wt-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--accent);cursor:pointer;
+}
+.wt-val{font-size:0.6rem;color:var(--text2);min-width:24px;text-align:center}
+
+/* Card style options */
+.copt{
+  font-size:0.6rem;padding:4px 10px;border-radius:100px;cursor:pointer;
+  border:1px solid var(--rule);color:var(--text2);white-space:nowrap;
+  background:transparent;font-family:inherit;transition:all 0.15s;
+}
+.copt:hover{border-color:var(--accent);color:var(--text)}
+.copt.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ═══════ PREVIEW ═══════ */
+.preview{position:relative;z-index:1;padding:clamp(28px,5vh,48px) 24px 64px;max-width:820px;margin:0 auto}
+.mode-badge{
+  font-size:0.55rem;text-transform:uppercase;letter-spacing:0.15em;
+  color:var(--accent);margin-bottom:8px;transition:color 0.35s;
+}
+.preview h1{
+  font-family:var(--h-font);font-weight:var(--h-weight);
+  font-size:clamp(34px,5.5vw,60px);letter-spacing:var(--ls);
+  line-height:1.1;margin-bottom:8px;transition:all 0.3s;
+}
+.preview .tagline{font-size:1rem;color:var(--text2);max-width:500px;line-height:1.6}
+.preview .story{font-size:0.88rem;color:var(--text2);max-width:540px;line-height:1.8;margin-top:14px}
+
+/* Cards */
+.cards-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:32px;
+}
+.card{
+  background:var(--surf);padding:20px;transition:all 0.35s;
+}
+.card h4{font-family:var(--h-font);font-weight:var(--h-weight);font-size:0.85rem;color:var(--accent);margin-bottom:4px}
+.card .cbody{font-size:0.76rem;color:var(--text2);line-height:1.6}
+.card .stat{font-size:1.5rem;font-weight:700;color:var(--text);margin-top:8px}
+.card .strip{height:3px;background:var(--accent);margin-top:10px;transition:background 0.35s}
+
+/* Card styles */
+.card.flat{border:1px solid var(--rule);border-radius:var(--card-radius)}
+.card.shadow{border-radius:var(--card-radius);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.card.leftline{border-left:3px solid var(--accent);border-radius:var(--card-radius);background:var(--surf)}
+.card.glass{
+  background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);
+  border:1px solid var(--rule);border-radius:var(--card-radius);
+}
+.card.minimal{border-radius:var(--card-radius);background:transparent;padding:16px 0}
+.card.outline{border:1px solid var(--accent);border-radius:var(--card-radius);background:transparent}
+
+/* CTA */
+.cta{
+  display:inline-block;margin-top:24px;padding:12px 28px;
+  background:var(--accent);color:#fff;border:none;cursor:pointer;
+  font-family:var(--b-font);font-weight:600;font-size:0.82rem;
+  border-radius:2px;transition:background 0.35s;
+}
+
+/* Section divider */
+.sec-div{margin-top:40px;padding-top:32px;border-top:1px solid var(--rule)}
+.sec-div h2{font-family:var(--h-font);font-weight:var(--h-weight);font-size:1.5rem;letter-spacing:var(--ls);margin-bottom:4px}
+.sec-div p{color:var(--text2);font-size:0.82rem}
+
+/* Responsive */
+@media(max-width:700px){
+  .ctrl-row{gap:6px}
+  .chip{width:18px;height:18px}
+  .fopt{font-size:0.55rem;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+<div class="silk"></div>
+
+<!-- ═══════════════════════ CONTROLS ═══════════════════════ -->
+<div class="controls" id="controls">
+  <!-- Row 1: Mode + Colors -->
+  <div class="ctrl-row">
+    <span class="ctrl-label">Mode</span>
+    <div class="mode-tog">
+      <button class="on" data-mode="modeA" onclick="setMode('modeA')">Mode A</button>
+      <button data-mode="modeB" onclick="setMode('modeB')">Mode B</button>
+    </div>
+    <span class="ctrl-label" style="margin-left:8px">Colors</span>
+    <span id="swatchRow" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"></span>
+  </div>
+
+  <!-- Row 2: Fonts + Weights + Spacing -->
+  <div class="ctrl-row">
+    <span class="ctrl-label">Heading</span>
+    <span id="hFontRow" style="display:flex;gap:4px;flex-wrap:wrap"></span>
+    <span class="ctrl-label" style="margin-left:8px">Body</span>
+    <span id="bFontRow" style="display:flex;gap:4px;flex-wrap:wrap"></span>
+  </div>
+
+  <!-- Row 3: Weights + Letter spacing + Card style -->
+  <div class="ctrl-row">
+    <span class="ctrl-label">H Wt</span>
+    <input type="range" class="wt-slider" min="300" max="700" step="100" value="700" id="hwSlider" oninput="updateWeight('h',this.value)">
+    <span class="wt-val" id="hwVal">700</span>
+
+    <span class="ctrl-label" style="margin-left:8px">B Wt</span>
+    <input type="range" class="wt-slider" min="300" max="700" step="100" value="400" id="bwSlider" oninput="updateWeight('b',this.value)">
+    <span class="wt-val" id="bwVal">400</span>
+
+    <span class="ctrl-label" style="margin-left:8px">Spacing</span>
+    <input type="range" class="wt-slider" min="-3" max="10" step="1" value="-1" style="width:100px" id="lsSlider" oninput="updateLS(this.value)">
+    <span class="wt-val" id="lsVal">-0.01</span>
+
+    <span class="ctrl-label" style="margin-left:8px">Cards</span>
+    <span id="cardStyleRow" style="display:flex;gap:4px;flex-wrap:wrap"></span>
+
+    <button class="copt" style="margin-left:auto;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600" onclick="exportConfig()">Export ⬇</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PREVIEW ═══════════════════════ -->
+<!-- NOTE: replace all demo copy below with the real project's copy -->
+<div class="preview">
+  <div class="mode-badge" id="modeBadge">MODE A</div>
+  <h1>[Brand Name]</h1>
+  <div class="tagline" id="tagline">[Tagline placeholder — replace with real copy.]</div>
+  <div class="story" id="story">
+    [One-paragraph brand story placeholder. Replace with real copy that explains
+    who the brand is, what it does, and why it exists.]
+  </div>
+
+  <div class="cards-grid">
+    <div class="card flat"><h4>[Offer 1]</h4><div class="cbody">[Short description placeholder.]</div><div class="stat">[--]</div><div class="strip"></div></div>
+    <div class="card flat"><h4>[Offer 2]</h4><div class="cbody">[Short description placeholder.]</div><div class="stat">[--]</div><div class="strip"></div></div>
+    <div class="card flat"><h4>[Offer 3]</h4><div class="cbody">[Short description placeholder.]</div><div class="stat">[--]</div><div class="strip"></div></div>
+    <div class="card flat"><h4>[Offer 4]</h4><div class="cbody">[Short description placeholder.]</div><div class="stat">[--]</div><div class="strip"></div></div>
+  </div>
+
+  <button class="cta" id="ctaBtn">[Call to action →]</button>
+
+  <div class="sec-div">
+    <h2>[Section heading]</h2>
+    <p id="aboutCopy">
+      [About/section copy placeholder. Replace with real copy for the section
+      being explored in this design lab.]
+    </p>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA: Two full palettes (modeA = default, modeB = alternative direction)
+// Replace every string and color with project-specific values.
+// ══════════════════════════════════════
+const P = {
+  modeA: {
+    name:'Mode A',badge:'MODE A · [direction descriptor]',
+    tagline:'[Tagline for Mode A direction.]',
+    story:'[Story for Mode A direction. One paragraph.]',
+    about:'[About/section copy for Mode A direction.]',
+    cta:'[CTA for Mode A →]',
+    colors:{bg:'#F4F2F8',surf:'#EDE8F2',text:'#1A1620',text2:'#5A5468',accent:'#8B1A4A',rule:'#D8D4E4',muted:'#9892A8'}
+  },
+  modeB: {
+    name:'Mode B',badge:'MODE B · [direction descriptor]',
+    tagline:'[Tagline for Mode B direction.]',
+    story:'[Story for Mode B direction. One paragraph.]',
+    about:'[About/section copy for Mode B direction.]',
+    cta:'[CTA for Mode B →]',
+    colors:{bg:'#0D0A10',surf:'#1A1520',text:'#E8E0F0',text2:'#A098B0',accent:'#C02860',rule:'#2A2430',muted:'#6A6078'}
+  }
+};
+
+// Font catalog — system fonts only, no webfonts, no CDN
+const FONTS = {
+  heading: [
+    {name:'Georgia', css:"Georgia,'Times New Roman',serif", preview:'Georgia'},
+    {name:'Palatino', css:"'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif", preview:'Palatino'},
+    {name:'Garamond', css:"Garamond,'Adobe Garamond',Georgia,serif", preview:'Garamond'},
+    {name:'Didone', css:"'Bodoni MT','Modern No.20',Didot,Georgia,serif", preview:'Didone'},
+    {name:'System Sans', css:"system-ui,-apple-system,'Segoe UI',sans-serif", preview:'Sans'},
+    {name:'Helvetica', css:"'Helvetica Neue','Arial Nova',Helvetica,system-ui,sans-serif", preview:'Helvetica'},
+    {name:'Segoe UI', css:"'Segoe UI',system-ui,-apple-system,sans-serif", preview:'Segoe'},
+  ],
+  body: [
+    {name:'System Sans', css:"system-ui,-apple-system,'Segoe UI',sans-serif", preview:'Sys Sans'},
+    {name:'Segoe UI', css:"'Segoe UI',system-ui,-apple-system,sans-serif", preview:'Segoe'},
+    {name:'Helvetica', css:"'Helvetica Neue','Arial Nova',Helvetica,sans-serif", preview:'Helvetica'},
+    {name:'Georgia', css:"Georgia,'Times New Roman',serif", preview:'Georgia'},
+    {name:'Mono', css:"'Cascadia Code','Fira Code','Courier New',monospace", preview:'Mono'},
+  ]
+};
+
+const CARD_STYLES = ['flat','shadow','leftline','glass','minimal','outline'];
+
+// Default per-mode settings
+function defaultMode(){ return {overrides:{},hFont:0,bFont:0,hWeight:400,bWeight:400,ls:0,cardStyle:'flat'}; }
+
+// State — everything is per-mode
+let state = {
+  mode:'modeA',
+  modeA: defaultMode(),
+  modeB: defaultMode()
+};
+
+// Helper: get current mode's config
+function cfg(){ return state[state.mode]; }
+
+// ═══════ APPLY ═══════
+function apply(){
+  const p = P[state.mode];
+  const c = cfg();
+  const roles = ['bg','surf','text','text2','accent','rule','muted'];
+  const root = document.documentElement.style;
+  roles.forEach(r => root.setProperty('--'+r, c.overrides[r] || p.colors[r]));
+  root.setProperty('--h-font', FONTS.heading[c.hFont].css);
+  root.setProperty('--b-font', FONTS.body[c.bFont].css);
+  root.setProperty('--h-weight', c.hWeight);
+  root.setProperty('--b-weight', c.bWeight);
+  root.setProperty('--ls', (c.ls/100)+'em');
+
+  document.getElementById('modeBadge').textContent = p.badge;
+  document.getElementById('tagline').textContent = p.tagline;
+  document.getElementById('story').textContent = p.story;
+  document.getElementById('aboutCopy').textContent = p.about;
+  document.getElementById('ctaBtn').textContent = p.cta;
+
+  document.querySelectorAll('.card').forEach(card => { card.className = 'card ' + c.cardStyle; });
+
+  document.getElementById('hwSlider').value = c.hWeight;
+  document.getElementById('hwVal').textContent = c.hWeight;
+  document.getElementById('bwSlider').value = c.bWeight;
+  document.getElementById('bwVal').textContent = c.bWeight;
+  document.getElementById('lsSlider').value = c.ls;
+  document.getElementById('lsVal').textContent = (c.ls/100).toFixed(2)+'em';
+}
+
+// ═══ RENDER CONTROLS ═══
+function renderAll(){
+  const p = P[state.mode];
+  const c = cfg();
+  const roles = ['bg','surf','text','text2','accent','rule','muted'];
+  const labels = {bg:'BG',surf:'Card',text:'Text',text2:'Sub',accent:'★',rule:'┊',muted:'·'};
+
+  let sh = '';
+  roles.forEach(r => {
+    const def = p.colors[r];
+    const isOv = !!c.overrides[r];
+    sh += `<div class="chip${!isOv?' on':''}" style="background:${def}" title="${labels[r]}: ${def}" onclick="pickColor('${r}','${def}')"></div>`;
+    getAlts(r).forEach(a => {
+      sh += `<div class="chip${c.overrides[r]===a?' on':''}" style="background:${a}" title="${labels[r]} alt" onclick="pickColor('${r}','${a}')"></div>`;
+    });
+  });
+  document.getElementById('swatchRow').innerHTML = sh;
+
+  let hf = '';
+  FONTS.heading.forEach((f,i) => { hf += `<button class="fopt${c.hFont===i?' on':''}" style="font-family:${f.css}" onclick="setHFont(${i})">${f.preview}</button>`; });
+  document.getElementById('hFontRow').innerHTML = hf;
+
+  let bf = '';
+  FONTS.body.forEach((f,i) => { bf += `<button class="fopt${c.bFont===i?' on':''}" style="font-family:${f.css}" onclick="setBFont(${i})">${f.preview}</button>`; });
+  document.getElementById('bFontRow').innerHTML = bf;
+
+  let cs = '';
+  CARD_STYLES.forEach(s => { cs += `<button class="copt${c.cardStyle===s?' on':''}" onclick="setCardStyle('${s}')">${s}</button>`; });
+  document.getElementById('cardStyleRow').innerHTML = cs;
+
+  document.querySelectorAll('.mode-tog button').forEach(b => { b.classList.toggle('on', b.dataset.mode === state.mode); });
+}
+
+function getAlts(role){
+  const m = state.mode;
+  const map = {
+    bg:{modeA:['#FCFAF8','#F0EEF4','#E8E6F0'],modeB:['#08060C','#120E18','#0F0B14']},
+    surf:{modeA:['#F0ECF4','#E6E2EE','#F4F0F8'],modeB:['#1E1828','#161020','#1C1624']},
+    text:{modeA:['#0D0A14','#221E2A','#14101C'],modeB:['#F0E8F8','#E0D8EC','#F4ECFC']},
+    text2:{modeA:['#4A4458','#6A6478','#565068'],modeB:['#B0A8C0','#9890A8','#B8B0C8']},
+    accent:{modeA:['#7A1840','#A02850','#6E1438','#9C2058','#B82A60'],modeB:['#D03070','#B02058','#E04080','#C82868','#E85088']},
+    rule:{modeA:['#D0CCDE','#C8C4D8','#DCD8E8'],modeB:['#2E2838','#322C3C','#282230']},
+    muted:{modeA:['#A098B0','#8A8298','#A8A0B8'],modeB:['#7A7088','#6A6078','#7A7288']},
+  };
+  return map[role]?.[m] || [];
+}
+
+// ═══ ACTIONS (all per-mode) ═══
+function setMode(m){ state.mode = m; apply(); renderAll(); save(); }
+function pickColor(role, hex){
+  const c = cfg(); const p = P[state.mode];
+  if(p.colors[role] === hex) delete c.overrides[role];
+  else c.overrides[role] = hex;
+  apply(); renderAll(); save();
+}
+function setHFont(i){ cfg().hFont=i; apply(); renderAll(); save(); }
+function setBFont(i){ cfg().bFont=i; apply(); renderAll(); save(); }
+function updateWeight(type,val){
+  val = parseInt(val); const c = cfg();
+  if(type==='h') c.hWeight = val; else c.bWeight = val;
+  apply(); save();
+}
+function updateLS(val){ cfg().ls = parseInt(val); apply(); save(); }
+function setCardStyle(s){ cfg().cardStyle=s; apply(); renderAll(); save(); }
+
+function exportConfig(){
+  const c = cfg(); const p = P[state.mode];
+  const roles = ['bg','surf','text','text2','accent','rule','muted'];
+  const cc = {}; roles.forEach(r => { cc[r] = c.overrides[r] || p.colors[r]; });
+  const summary = [
+    '═══ Design Lab Export ═══',
+    '',
+    'MODE: ' + p.name + ' (' + p.badge + ')',
+    '',
+    'COLORS:',
+    '  BG:      ' + cc.bg,
+    '  Surface: ' + cc.surf,
+    '  Text:    ' + cc.text,
+    '  Subtext: ' + cc.text2,
+    '  Accent:  ' + cc.accent,
+    '  Border:  ' + cc.rule,
+    '  Muted:   ' + cc.muted,
+    '',
+    'TYPOGRAPHY:',
+    '  Heading: ' + FONTS.heading[c.hFont].name + ' · weight ' + c.hWeight + ' · spacing ' + (c.ls/100).toFixed(2) + 'em',
+    '  Body:    ' + FONTS.body[c.bFont].name + ' · weight ' + c.bWeight,
+    '',
+    'CARDS: ' + c.cardStyle,
+    '',
+    'SWITCH TO OTHER MODE and export again for full config.',
+  ].join('\n');
+
+  let modal = document.getElementById('exportModal');
+  if(!modal){
+    modal = document.createElement('div'); modal.id = 'exportModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center';
+    modal.addEventListener('click', function(e){ if(e.target===this) this.remove(); });
+    modal.innerHTML = '<div style="background:var(--bg);color:var(--text);padding:28px;max-width:480px;width:90%;border-radius:2px;max-height:80vh;overflow-y:auto;font-family:system-ui,sans-serif;font-size:0.8rem;line-height:1.6;white-space:pre-wrap;border:1px solid var(--rule)" onclick="event.stopPropagation()"><h4 style="margin:0 0 12px;font-size:0.9rem">🧵 Design Lab Export</h4><pre id="exportPre" style="font-family:monospace;white-space:pre-wrap;margin:0;font-size:0.75rem;user-select:all"></pre><div style="margin-top:14px;display:flex;gap:8px"><button onclick="copyExport()" id="copyBtn" style="padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:2px;cursor:pointer;font-size:0.75rem;font-family:inherit">Copy</button><button onclick="this.closest(\'#exportModal\').remove()" style="padding:8px 18px;background:transparent;border:1px solid var(--rule);color:var(--text2);border-radius:2px;cursor:pointer;font-size:0.75rem;font-family:inherit">Close</button></div></div>';
+    document.body.appendChild(modal);
+  }
+  document.getElementById('exportPre').textContent = summary;
+  modal.style.display = 'flex';
+}
+
+function copyExport(){
+  const pre = document.getElementById('exportPre');
+  const text = pre.textContent;
+  // Try modern clipboard API first
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      document.getElementById('copyBtn').textContent = 'Copied!';
+    }).catch(function(){
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); document.getElementById('copyBtn').textContent = 'Copied!'; }
+  catch(e){ document.getElementById('copyBtn').textContent = 'Select & Ctrl+C'; }
+  document.body.removeChild(ta);
+}
+
+// Storage key: change to a project-specific key for each board
+const STORAGE_KEY = 'design-lab-state';
+
+function save(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+}
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(!s) return;
+    // Migrate old flat format to new per-mode format
+    if(s.hFont !== undefined && !s.modeA){
+      const mode = s.mode || 'modeA';
+      state.mode = mode;
+      state.modeA = {overrides:s.overrides||{},hFont:s.hFont||0,bFont:s.bFont||0,hWeight:s.hWeight||400,bWeight:s.bWeight||400,ls:s.ls||0,cardStyle:s.cardStyle||'flat'};
+      state.modeB = defaultMode();
+    } else {
+      state = s;
+      if(!state.modeA) state.modeA = defaultMode();
+      if(!state.modeB) state.modeB = defaultMode();
+    }
+  }catch(e){}
+}
+
+// Init
+load();
+apply();
+renderAll();
+</script>
+</body>
+</html>
