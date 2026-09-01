@@ -131,6 +131,8 @@ When building Phase 3 or Phase 4 mockups:
    secondary if a local HTTP server is available.
 4. Every board must have a **"Copy result" button** in the top bar that copies a readable
    summary straight to the clipboard — no modal. Use the `legacyCopy` fallback pattern.
+   **Copied results are English-only** — labels like "Selected:" / "Notes:", never bilingual
+   or Chinese labels.
 5. If delivering over chat platforms that block raw HTML, zip it or host it.
 
 ## Anti-Patterns (NEVER DO)
