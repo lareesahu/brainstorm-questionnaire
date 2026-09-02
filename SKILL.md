@@ -133,7 +133,14 @@ When building Phase 3 or Phase 4 mockups:
    summary straight to the clipboard — no modal. Use the `legacyCopy` fallback pattern.
    **Copied results are English-only** — labels like "Selected:" / "Notes:", never bilingual
    or Chinese labels.
-5. If delivering over chat platforms that block raw HTML, zip it or host it.
+5. **Every board MUST end with a round-trip handoff, not a dead-end.** The user's decisions
+   live in THEIR browser; the agent cannot read their localStorage. Submit/Copy must produce a
+   plain-text decision summary (module/file/choice lines or pill values + notes) that the user
+   can paste back into chat, and the button must ALSO show a visible textarea fallback with
+   the summary selected (clipboard can fail). State this on the board: "hit Copy result /
+   Submit, then paste the summary back to Hermes." NEVER tell the user "it's saved" — it is
+   only saved once the summary is pasted back and the agent confirms.
+6. If delivering over chat platforms that block raw HTML, zip it or host it.
 
 ## Anti-Patterns (NEVER DO)
 - Do NOT ask clarifying questions in chat — build the page
@@ -205,3 +212,28 @@ copy button that relies solely on the Clipboard API.
 2. Race any `navigator.clipboard` call against a 500ms `withTimeout` so the button NEVER hangs.
 3. Final fallback: `window.getSelection()` select the export body + feedback "Select + Ctrl+C".
 4. Use `window.isSecureContext && navigator.clipboard` as the gate before using the API.
+
+## Pitfall 5 — Decisions lost / never reach the agent (localStorage-only boards)
+
+Recurring failure (multiple incidents): boards save selections to `localStorage`, the submit
+button only shows an alert or silently saves, and the agent never receives the decisions —
+or the user's saved state silently resets because the page is opened as a `file://` URL,
+where localStorage is unreliable (per-profile/per-file, can be disabled or cleared on file
+rewrites). The user then unknowingly submits defaults.
+
+**Required rules:**
+1. localStorage is a convenience, NEVER the delivery channel. Autosave to a UNIQUE per-project
+   key (`<topic>-brainstorm-v1`), feature-detect it, and if unavailable show a persistent
+   banner: "Autosave off — open this via the http:// link, or keep this tab open and use
+   Copy result when done."
+2. The board's primary action is **Submit / Copy result → plain-text summary → user pastes it
+   back to the agent**. After building the summary, ALWAYS (a) write it into a visible
+   selectable textarea, (b) attempt clipboard copy, (c) label the button "Copy & paste back
+   to Hermes".
+3. Never rely on "tell me when you're done" with no artifact: if the user says they submitted
+   but nothing arrived, the first assumption is the handoff UI failed — give them the textarea
+   fallback, never make them re-pick.
+4. Do NOT rewrite/replace a board HTML file between the user's sessions unless their last
+   summary was already pasted back and recorded; rewriting the file can clear their state.
+5. QA: verify the summary textarea + copy path by simulating a submission (read-only, no pill
+   clicks) — confirm non-empty output that includes every section.
